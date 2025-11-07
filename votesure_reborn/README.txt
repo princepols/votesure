@@ -1,8 +1,11 @@
 
-Import init_db.sql into phpMyAdmin to create the database and default admin:
+import init_db.sql into phpMyAdmin to create the database:
   username: admin
   password: admin123
 
-Access:
-- Voter: http://localhost/votesure_reborn/public/index.php
-- Admin: http://localhost/votesure_reborn/admin/login.php
+access:
+voter: http://localhost/votesure_reborn/public/index.php
+admin: http://localhost/votesure_reborn/admin/login.php
+
+credits:
+group 10 - 12 OPTIMISM
