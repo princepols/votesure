@@ -6,7 +6,70 @@ $student_id = $_SESSION['voter_student_id'];
 $stmt = $pdo->prepare("SELECT * FROM elections WHERE status = 'running' ORDER BY id DESC LIMIT 1");
 $stmt->execute();
 $election = $stmt->fetch();
-if (!$election) { die('No active election. Please contact administrator.'); }
+
+if (!$election) {
+    echo '
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>No Active Election</title>
+        <style>
+            body {
+                background-color: #f2f2f2;
+                font-family: "Poppins", sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .container {
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                padding: 40px;
+                text-align: center;
+                width: 400px;
+                border-top: 8px solid #800000; /* Maroon top accent */
+            }
+            h1 {
+                color: #800000;
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            p {
+                color: #555;
+                margin-bottom: 25px;
+            }
+            a.button {
+                display: inline-block;
+                background-color: #800000;
+                color: #fff;
+                padding: 12px 25px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: background 0.3s ease;
+            }
+            a.button:hover {
+                background-color: #660000;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>No Active Election</h1>
+            <p>There is currently no ongoing election. Please contact the administrator for assistance.</p>
+            <a href="index.php" class="button">Return to Voting Page</a>
+        </div>
+    </body>
+    </html>';
+    exit;
+}
+
+
 $stmt = $pdo->prepare('SELECT p.id AS pid, p.name AS pname, c.id AS cid, c.name AS cname, c.photo AS cphoto, c.position AS cpos FROM partylists p LEFT JOIN candidates c ON p.id = c.partylist_id WHERE p.election_id = ? ORDER BY p.id, c.id');
 $stmt->execute([$election['id']]);
 $rows = $stmt->fetchAll();

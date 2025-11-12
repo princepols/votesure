@@ -39,7 +39,6 @@ include __DIR__ . '/../includes/header.php';
           <input class="form-control form-control-lg" id="student_id" name="student_id" autofocus required placeholder="Scan or type student ID">
         </div>
         <div class="col-12 d-flex justify-content-between align-items-center">
-          <a class="btn btn-outline-secondary" href="/votesure_reborn/admin/login.php"><i class="fas fa-shield-alt"></i> Admin</a>
           <button class="btn btn-violet btn-lg" type="submit"><i class="fas fa-vote-yea"></i> Start Voting</button>
         </div>
       </form>

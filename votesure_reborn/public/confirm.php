@@ -9,7 +9,7 @@ include __DIR__ . '/../includes/header.php';
   <div class="col-md-6">
     <div class="card card-modern p-4 text-center">
       <?php if ($success): ?>
-        <h3 class="text-success">Thank you — your vote has been recorded.</h3>
+        <h3 class="text-success">Thank you! Your vote has been recorded.</h3>
         <p class="small-muted">Your participation matters. Please inform staff if you experience issues.</p>
         <a class="btn btn-violet" href="index.php">Back to Voter Station</a>
       <?php else: ?>
