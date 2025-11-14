@@ -9,7 +9,7 @@ $totalV = $pdo->query('SELECT COUNT(*) FROM votes')->fetchColumn();
 ?>
 
 <div class="alert alert-success text-center mt-4" style="font-size: 1.2rem;">
-👋 Welcome, Admin! Manage your elections, candidates, and reports below.
+👋 Welcome, Admin!
 </div>
 
 

@@ -170,7 +170,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </li>
         <li class="nav-item">
           <a class="nav-link <?php echo $current_page == 'partylists.php' ? 'active' : ''; ?>" href="partylists.php">
-            <i class="fas fa-list-alt me-2"></i>Party Lists
+            <i class="fas fa-list-alt me-2"></i>Positions
           </a>
         </li>
         <li class="nav-item">
@@ -188,19 +188,26 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="fas fa-chart-bar me-2"></i>Results
           </a>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link <?php echo $current_page == 'register_voters.php' ? 'active' : ''; ?>" href="register_voters.php">
+            <i class="fas fa-chart-bar me-2"></i>Register Voters
+          </a>
+        </li>
+
         <li class="nav-item">
           <a class="nav-link <?php echo $current_page == 'reports.php' ? 'active' : ''; ?>" href="reports.php">
             <i class="fas fa-file-csv me-2"></i>Reports
           </a>
         </li>
 
-        <!--
+        
         <li class="nav-item">
           <a class="nav-link text-danger" href="logout.php">
             <i class="fas fa-sign-out-alt me-2"></i>Logout
           </a>
         </li>
--->
+
       </ul>
     </div>
   </div>

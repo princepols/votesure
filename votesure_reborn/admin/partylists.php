@@ -50,7 +50,7 @@ include __DIR__ . '/header.php';
 <div class="card card-modern p-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">Party Lists</h4>
-    <div class="small-muted">Add or remove partylists</div>
+    <div class="small-muted">Add or remove position</div>
   </div>
 
   <form method="get" class="mb-3">

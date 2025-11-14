@@ -9,6 +9,16 @@ if (empty($_SESSION['voter_student_id'])) {
 
 $student_id = $_SESSION['voter_student_id'];
 
+// Double-check registration
+$chk = $pdo->prepare("SELECT * FROM registered_voters WHERE student_id = ?");
+$chk->execute([$student_id]);
+if (!$chk->fetch()) {
+    unset($_SESSION['voter_student_id']);
+    $_SESSION['vote_error'] = 'You are not a registered voter.';
+    header('Location: index.php');
+    exit;
+}
+
 // Get active election
 $stmt = $pdo->prepare("SELECT * FROM elections WHERE status = 'running' ORDER BY id DESC LIMIT 1");
 $stmt->execute();
@@ -18,7 +28,7 @@ if (!$election) {
     die('No active election.');
 }
 
-// Get all partylists for the election
+// Get partylists for election
 $stmt = $pdo->prepare('SELECT id FROM partylists WHERE election_id = ?');
 $stmt->execute([$election['id']]);
 $pls = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -36,7 +46,7 @@ $selected_candidate_ids = [];
 
 foreach ($pls as $pid) {
     if (!isset($choices_in[$pid])) {
-        $_SESSION['vote_error'] = 'Please select a candidate for each section.';
+        $_SESSION['vote_error'] = 'Please complete all selections.';
         header('Location: vote.php');
         exit;
     }
@@ -57,7 +67,7 @@ foreach ($pls as $pid) {
 try {
     $pdo->beginTransaction();
 
-    // Check if voter already voted
+    // Check if already voted
     $chk = $pdo->prepare('SELECT COUNT(*) FROM votes WHERE election_id = ? AND student_id = ?');
     $chk->execute([$election['id'], $student_id]);
     if ($chk->fetchColumn() > 0) {
@@ -67,11 +77,11 @@ try {
         exit;
     }
 
-    // Insert the vote record
+    // Record vote
     $ins = $pdo->prepare('INSERT INTO votes (election_id, student_id, choices) VALUES (?, ?, ?)');
     $ins->execute([$election['id'], $student_id, json_encode(array_values($selected_candidate_ids))]);
 
-    // Update student status
+    // Update student status (only if record exists)
     $upd = $pdo->prepare('UPDATE students SET voted = 1 WHERE student_id = ?');
     $upd->execute([$student_id]);
 

@@ -30,7 +30,7 @@ body{
 }
 .topbar {
   background: linear-gradient(90deg,var(--maroon-700),var(--maroon-600));
-  color:white; padding:12px 20px; border-radius:0 0 12px 12px; box-shadow: var(--shadow);
+  color:white; padding:12px 20px; border-radius:20 0 12px 12px; box-shadow: var(--shadow);
 }
 .brand { display:flex; align-items:center; gap:12px; font-weight:700; }
 .brand img{ height:48px; width:auto; border-radius:8px; background:rgba(255,255,255,0.04); padding:6px; }
