@@ -44,6 +44,66 @@ body{
 footer.site-footer { margin-top:40px; padding:20px 0; text-align:center; color:var(--muted); font-size:13px; }
 .container-main { margin-top:18px; }
 .alert-fixed { position:fixed; top:16px; right:16px; z-index:1100; }
+
+
+/* === Fix white seams / thin white outlines on admin cards & tables ===
+   Paste this near the end of the existing <style> block in includes/header.php
+   (keeps changes global for public + admin pages)
+*/
+.card, .card-modern {
+  /* Remove bright/white border that causes seams against colored backgrounds */
+  border: 0 !important;
+
+  /* Keep subtle separation via shadow instead of a hard white line */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+
+  /* Prevent child backgrounds from leaking at rounded corners */
+  background-clip: padding-box;
+  overflow: hidden;
+
+  /* Keep consistent radius */
+  border-radius: 12px !important;
+}
+
+/* Ensure card header doesn't add a thin divider line */
+.card .card-header, .card-header {
+  border: 0 !important;
+  background-clip: padding-box;
+}
+
+/* Tables: collapse borders and use subtle cell borders that won't create bright seams */
+.table, .table-voters, table {
+  border-collapse: collapse !important;
+  background: transparent !important;
+}
+
+.table td, .table th, .table-voters td, .table-voters th {
+  background: transparent !important;                 /* let the parent card background show */
+  border: 1px solid rgba(0,0,0,0.06) !important;      /* subtle, non-white grid lines */
+  vertical-align: top;
+}
+
+/* If using table-striped, make odd row tint very subtle so it doesn't create seams */
+.table-striped tbody tr:nth-of-type(odd) td {
+  background-color: rgba(0,0,0,0.02) !important;
+}
+
+/* Prevent focus outlines from producing visible white seams — keep an accessible ring */
+.btn:focus, .form-control:focus, .list-group-item:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(128,0,0,0.06) !important; /* gentle focus ring */
+}
+
+/* Ensure inner blocks are transparent so they don't introduce white backgrounds */
+.partylist-block, .pl-choice, .candidate-item, .candidate-info {
+  background: transparent !important;
+}
+
+/* Optional: fallback for tricky rendering (fractional pixel seam) */
+/* Uncomment if you still see a 1px seam: */
+/*
+.card { transform: translateZ(0); -webkit-backface-visibility: hidden; }
+*/
 </style>
 </head>
 <body>

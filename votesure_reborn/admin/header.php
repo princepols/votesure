@@ -10,7 +10,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <style>
 .sidebar {
-    background: linear-gradient(135deg, #F5A433 0%, #B07D35 100%); /*background: linear-gradient(135deg, #800000 0%, #611212 100%); */
+    background: linear-gradient(135deg, #B07D35 0%, #F5A433 100%); /*background: linear-gradient(135deg, #800000 0%, #611212 100%); */
     min-height: 100vh;
     padding: 20px 0;
     box-shadow: 3px 0 15px rgba(0,0,0,0.1);
@@ -143,6 +143,114 @@ $current_page = basename($_SERVER['PHP_SELF']);
   }
 }
 
+
+
+
+/* === Admin-only fix for white seams on cards and tables ===
+   Paste inside the <style> block in admin/header.php
+*/
+.card, .card-modern {
+  border: 0 !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+  background-clip: padding-box;
+  overflow: hidden;
+  border-radius: 12px !important;
+}
+
+.card .card-header, .card-header {
+  border: 0 !important;
+  background-clip: padding-box;
+}
+
+.table, .table-voters, table {
+  border-collapse: collapse !important;
+  background: transparent !important;
+}
+.table td, .table th, .table-voters td, .table-voters th {
+  background: transparent !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  vertical-align: top;
+}
+
+.table-striped tbody tr:nth-of-type(odd) td {
+  background-color: rgba(0,0,0,0.02) !important;
+}
+
+.btn:focus, .form-control:focus, .list-group-item:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(128,0,0,0.06) !important;
+}
+
+.partylist-block, .pl-choice, .candidate-item, .candidate-info {
+  background: transparent !important;
+}
+
+
+
+
+
+
+
+/* Sidebar seam/outlines fix — paste into admin/header.php style block */
+
+/* Remove white/bright border and clip children at rounded corners */
+.sidebar {
+  border: 0 !important;                     /* remove bright outline */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; /* subtle depth */
+  background-clip: padding-box;             /* prevent inner backgrounds leaking */
+  overflow: hidden;                         /* clip children to rounded corners */
+  border-radius: 12px !important;           /* match card radius */
+  padding: 18px 0 !important;               /* keep spacing */
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.00)) , linear-gradient(135deg, #e08b22 0%, #b26200 100%); /* preserve gradient look if desired */
+}
+
+/* Make inner sidebar panels transparent and avoid extra borders */
+.logo-container, .sidebar-header, .admin-info {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* Nav links: remove inner pale backgrounds that cause seams, keep hover styles */
+.nav-link {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: rgba(255,255,255,0.9) !important;
+}
+
+/* Ensure active and hover states still look distinct without hard white lines */
+.nav-link:hover, .nav-link.active {
+  background: rgba(255,255,255,0.06) !important;
+  transform: translateX(6px);
+  color: #fff !important;
+}
+
+/* Remove any small white outlines on link focus but keep accessible ring */
+.nav-link:focus, .nav-link:active {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.06) !important;
+}
+
+/* Ensure list-group / items inside sidebar don't introduce borders */
+ul.nav, .nav-item, .list-group-item {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* If there were thin separators, soften them */
+.sidebar .logo-container, .sidebar-header {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Small tweak to keep the highlight color subtle (avoid bright strokes) */
+.nav-link.text-danger {
+  background: rgba(220,53,69,0.08) !important;
+  border: 0 !important;
+}
+
+/* Optional: if you still see a 1px seam due to subpixel rendering, enable this debug helper temporarily:
+.sidebar { transform: translateZ(0); -webkit-backface-visibility: hidden; }
+*/
 </style>
 
 <div class="row">
