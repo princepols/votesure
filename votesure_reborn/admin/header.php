@@ -10,7 +10,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <style>
 .sidebar {
-    background: linear-gradient(135deg, #800000 0%, #611212 100%);
+    background: linear-gradient(135deg, #F5A433 0%, #B07D35 100%); /*background: linear-gradient(135deg, #800000 0%, #611212 100%); */
     min-height: 100vh;
     padding: 20px 0;
     box-shadow: 3px 0 15px rgba(0,0,0,0.1);

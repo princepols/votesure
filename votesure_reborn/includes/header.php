@@ -23,13 +23,13 @@
 }
 *{box-sizing:border-box;}
 body{
-  background: linear-gradient(180deg,var(--light-gray),#ffffff);
+  background: linear-gradient(180deg, #9C6009, #FFA500); /*background: linear-gradient(180deg,var(--light-gray),#FF9A00);*/
   color:var(--text-color);
   font-family: "Segoe UI", Roboto, Arial, sans-serif;
   -webkit-font-smoothing:antialiased;
 }
 .topbar {
-  background: linear-gradient(90deg,var(--maroon-700),var(--maroon-600));
+  background: linear-gradient(90deg, #FF8C00, #BD7A0D); /*background: linear-gradient(90deg,var(--maroon-700),var(--maroon-600)); */
   color:white; padding:12px 20px; border-radius:20 0 12px 12px; box-shadow: var(--shadow);
 }
 .brand { display:flex; align-items:center; gap:12px; font-weight:700; }
