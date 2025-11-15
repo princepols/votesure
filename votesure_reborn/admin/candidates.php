@@ -53,9 +53,9 @@ if (!$partylist_id) {
     include __DIR__ . '/header.php';
     ?>
     <div class="card card-modern p-4">
-      <h4>Select Partylist to Manage Candidates</h4>
+      <h4>Select Position to Manage Candidates</h4>
       <?php if (empty($pls)): ?>
-        <div class="alert alert-warning">No partylists found. Create a partylist first.</div>
+        <div class="alert alert-warning">No positions found. Create a position first.</div>
       <?php else: ?>
         <ul class="list-group">
         <?php foreach ($pls as $p): ?>

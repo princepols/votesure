@@ -1,1 +1,8 @@
-VoteSure is a secure web-base platform and user-friendly school/organization voting system designed to make elections more efficient and trustworthy. Our system ensures that only registered sudents can vote, prevents duplicate voting, and provides adminstrator with complete control over elections.
+
+Import init_db.sql into phpMyAdmin
+username: admin
+password: admin123
+
+access:
+voter: http://localhost/votesure_reborn/public/index.php
+admin: http://localhost/votesure_reborn/admin/login.php

@@ -11,10 +11,35 @@ if (!function_exists('h')) {
 // Get election
 $eid = $_GET['election_id'] ?? null;
 if (!$eid) { 
+    // If no election id provided, try to get the latest
     $e = $pdo->query("SELECT * FROM elections ORDER BY id DESC LIMIT 1")->fetch(); 
     $eid = $e['id'] ?? null; 
 }
-if (!$eid) die('No election found.');
+
+if (!$eid) {
+    // Show a styled "No election ongoing" message within the admin layout
+    $page_title = 'Election Results';
+    include __DIR__ . '/header.php';
+    ?>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card card-modern p-4 mt-4 text-center" style="border-top:8px solid #800000;">
+          <div style="font-size:48px; color:#800000; margin-bottom:12px;">
+            <i class="fas fa-calendar-times"></i>
+          </div>
+          <h3 class="mb-2">No election ongoing</h3>
+          <p class="small-muted mb-3">There is currently no active election. Start a new election from the admin panel to view results here.</p>
+          <div class="d-flex justify-content-center gap-2">
+            <a class="btn btn-violet" href="elections.php"><i class="fas fa-calendar-plus me-2"></i>Create Election</a>
+            <a class="btn btn-outline-secondary" href="dashboard.php"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <?php
+    include __DIR__ . '/footer.php';
+    exit;
+}
 
 $election_stmt = $pdo->prepare('SELECT * FROM elections WHERE id = ?'); 
 $election_stmt->execute([$eid]); 
@@ -49,10 +74,24 @@ foreach ($rows as $r) {
     }
 }
 
+// Build candidate map (id => [name, position, partylist_id, partylist_name]) for quick lookups later
+$candidate_map = [];
+foreach ($partylists as $plid => $pl) {
+    foreach ($pl['candidates'] as $cid => $cdata) {
+        $candidate_map[$cid] = [
+            'name' => $cdata['name'],
+            'position' => $cdata['position'],
+            'partylist_id' => $plid,
+            'partylist_name' => $pl['name']
+        ];
+    }
+}
+
 // Tally votes
 $votes_stmt = $pdo->prepare('SELECT * FROM votes WHERE election_id = ?'); 
 $votes_stmt->execute([$eid]);
-while ($v = $votes_stmt->fetch()) { 
+$all_votes = $votes_stmt->fetchAll();
+foreach ($all_votes as $v) { 
     $choices = json_decode($v['choices'], true); 
     if (is_array($choices)) { 
         foreach ($choices as $cand_id) { 
@@ -65,6 +104,22 @@ while ($v = $votes_stmt->fetch()) {
         } 
     } 
 }
+
+// Build votes by student mapping so we can show which candidates each voter selected
+$votes_by_student = [];
+foreach ($all_votes as $v) {
+    $sid = trim($v['student_id']);
+    $choices = json_decode($v['choices'], true);
+    if (!is_array($choices)) $choices = [];
+    $votes_by_student[$sid] = [
+        'choices' => $choices,
+        'created_at' => $v['created_at'] ?? null,
+        'vote_id' => $v['id'] ?? null
+    ];
+}
+
+// Fetch registered voters for Voter Logs
+$voters = $pdo->query('SELECT * FROM registered_voters ORDER BY created_at DESC')->fetchAll();
 
 $page_title = 'Election Results';
 include __DIR__ . '/header.php';
@@ -179,6 +234,30 @@ body {
     font-weight: bold;
     color: #800000;
 }
+
+/* Voter logs table */
+.table-voters {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-voters th, .table-voters td {
+    border: 1px solid #e9e9e9;
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.table-voters th {
+    background: #f8f8f8;
+    font-weight: 600;
+    color: #333;
+}
+
+.small-muted { color: #888; }
+.partylist-block { margin-bottom: 8px; }
+.partylist-block .pl-name { font-weight: 700; display:block; margin-bottom:4px; }
+.partylist-block .pl-choice { margin-left:8px; }
 </style>
 
 <div class="results-wrapper">
@@ -258,6 +337,77 @@ body {
             </div>
         </div>
     <?php endforeach; ?>
+
+    <!-- Voter Logs Section -->
+    <div class="card">
+      <div class="card-header">
+        Voter Logs
+      </div>
+      <div class="card-body">
+        <?php if (empty($voters)): ?>
+          <div class="alert alert-info">No registered voters found.</div>
+        <?php else: ?>
+          <div class="table-responsive">
+            <table class="table table-striped table-voters">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Year</th>
+                  <th>Added</th>
+                  <th>Voted Candidates</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($voters as $v): 
+                    $sid = trim($v['student_id']);
+                    $choices = $votes_by_student[$sid]['choices'] ?? [];
+                    // group chosen candidates by partylist name
+                    $by_party = [];
+                    if (is_array($choices) && count($choices) > 0) {
+                        foreach ($choices as $vcid) {
+                            if (isset($candidate_map[$vcid])) {
+                                $pl_name = $candidate_map[$vcid]['partylist_name'] ?? 'Unknown';
+                                $pos = $candidate_map[$vcid]['position'] ?? '';
+                                $name = $candidate_map[$vcid]['name'] ?? ('#' . intval($vcid));
+                                $by_party[$pl_name][] = ['position' => $pos, 'name' => $name];
+                            } else {
+                                $by_party['Unknown'][] = ['position' => '', 'name' => '#' . intval($vcid)];
+                            }
+                        }
+                    }
+                ?>
+                  <tr>
+                    <td><?= h($v['id']) ?></td>
+                    <td><?= h($v['student_id']) ?></td>
+                    <td><?= h($v['student_name']) ?></td>
+                    <td><?= h($v['course']) ?></td>
+                    <td><?= h($v['year_level']) ?></td>
+                    <td><?= h($v['created_at']) ?></td>
+                    <td>
+                      <?php if (empty($by_party)): ?>
+                        <span class="small-muted">Not voted</span>
+                      <?php else: ?>
+                        <?php foreach ($by_party as $pl_name => $items): ?>
+                          <div class="partylist-block">
+                            <span class="pl-name"><?= h($pl_name) ?>:</span>
+                            <?php foreach ($items as $it): ?>
+                              <div class="pl-choice"><?= ($it['position'] ? h($it['position']) . ': ' : '') . h($it['name']) ?></div>
+                            <?php endforeach; ?>
+                          </div>
+                        <?php endforeach; ?>
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        <?php endif; ?>
+      </div>
+    </div>
 </div>
 
 <?php include __DIR__ . '/footer.php'; ?>

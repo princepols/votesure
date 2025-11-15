@@ -51,7 +51,7 @@ include __DIR__ . '/../includes/header.php';
     <div class="card card-modern p-4 shadow-lg">
       <h4 class="mb-1 text-center">Voter Station</h4>
       <p class="small-muted text-center mb-3">
-        Please enter or scan your Student ID to start voting.<br>
+        Please enter your Student ID to start voting.<br>
         <span class="text-danger">Only IDs registered by the administrator are valid.</span>
       </p>
 
@@ -67,7 +67,7 @@ include __DIR__ . '/../includes/header.php';
                  name="student_id"
                  autofocus
                  required
-                 placeholder="Scan or type your Student ID here...">
+                 placeholder="Type your Student ID here...">
         </div>
         <div class="col-12 text-center mt-3">
           <button class="btn btn-violet btn-lg px-5" type="submit">
