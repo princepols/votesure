@@ -1,5 +1,5 @@
 
-Import init_db.sql into phpMyAdmin
+Import votesure_reborn1.sql into phpMyAdmin
 username: admin
 password: admin123
 
